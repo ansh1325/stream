@@ -1,7 +1,7 @@
-export function Signup(req,res){
+export async function Signup(req,res){
     res.send("Signup")
 }
-export function Login(req,res){
+export async function Login(req,res){
     res.send("in")
 }
 export function Logout(req,res){
