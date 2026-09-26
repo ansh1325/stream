@@ -1,5 +1,42 @@
+import User from "../models/User.js";
+
+import jwt from "jsonwebtoken"
 export async function Signup(req,res){
-    res.send("Signup")
+    const {email,password,fullName}=req.body
+
+    try {
+        if(!email|| !password || !fullName) return res.status(400).json({message:"All fields required"})
+
+        if(password.length<6) return res.status(400).json({message:"Short Password"})
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+        }
+
+        const existingUser=User.findOne({email})
+        if(existingUser) return res.status(400).json({message:"Email Exists"})
+
+        // const idx=Math.floor(Math.random()*100)+1
+        const randomAvatar=`https://api.dicebear.com/10.x/lorelei/svg?seed=${fullName}`
+
+        const newUser= await User.create({
+            email,fullName,password,profilePic:randomAvatar,
+        })
+
+        const token=jwt.sign({userId:newUser._id},process.env.jwt_key,{expiresIn:'7d'})
+
+
+        res.cookie("jwt",token,{maxAge:7*24*60*60*1000,httpOnly:true,sameSite:"strict",secure:process.env.NODE_ENV==='production'})
+        res.status(201).json({success:true,user:newUser})
+
+
+        
+    } catch (error) {
+        console.log(`error in signup`)
+        res.status(500).json({message:"no worry"})
+    }
 }
 export async function Login(req,res){
     res.send("in")
