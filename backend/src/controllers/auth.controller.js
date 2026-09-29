@@ -27,7 +27,7 @@ export async function Signup(req,res){
         })
 
         try {
-            await upsertStramUser({id:newUser._id,name:newUser.fullName,image:newUser.profilePic||""})
+            await upsertStramUser({id:newUser._id.toString(),name:newUser.fullName,image:newUser.profilePic||""})
             console.log("Stream User Created"+newUser._id+" for name "+newUser.fullName)
         } catch (error) {
             console.log(`some error creating stream user${error}`)
@@ -76,4 +76,51 @@ export async function Login(req,res){
 export function Logout(req,res){
     res.clearCookie("jwt")
     res.status(200).json({message:"You are logged out",success:true})
+}
+
+
+export async function Onboard(req,res) {
+    console.log(req.user)
+
+    try {
+        const userId=req.user._id
+
+
+    if(!fullName || !bio || !nativeLanguage || !learningLanguage || !location) {
+
+    return res.status(400).json({
+        message: "All fields are required",
+        missingFields: [
+            !fullName && "fullName",
+            !bio && "bio",
+            !nativeLanguage && "nativeLanguage",
+            !learningLanguage && "learningLanguage",
+            !location && "location",
+        ].filter(Boolean)
+    })
+}
+
+const updatedUser=User.findByIdAndUpdate(userId,{...req.body,isOnboarded:true},{new:true})
+
+if(!updatedUser) return res.status(400).json({message:"there was something which not let you get onboarded"})
+try {
+    await upsertStramUser({id:updatedUser._id.toString(),name:updatedUser.fullName, image:updatedUser.profilePic||""})
+
+    console.log(`Stream user updated ${updatedUser.fullName}`)
+} catch (error) {
+    console.log(`Streamm Error updation  ${error.message}`)
+}
+res.status(200).json({success:true,user:updatedUser})
+
+
+
+
+    } catch (error) {
+
+        console.log(`Error Onboarding ${error}`)
+
+        res.status(500).json({message:"Internal Error"})
+        
+    }
+
 }
