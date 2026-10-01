@@ -9,5 +9,7 @@ router.use(protectRoute)
 router.get("/friends",getMyFriends)
 router.get("/",getRecommendedUsers)
 
+router.get("/friend-request/:id",sendFriendRequest)
+
 
 export default router;
