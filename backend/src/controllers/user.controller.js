@@ -72,3 +72,38 @@ export async function sendFriendRequest() {
         return res.status(500).json({message:"Something wrong in the friend Request"})
     }
 }
+
+export async function acceptFriendRequest() {
+    try {
+        const {id:requestId} = req.params
+
+        const friendRequest=await FriendRequest.findById(requestId)
+
+        if(!friendRequest) return res.status(400).json({message:"Friend Request Does not exist"})
+        
+        if(friendRequest.recipient.toString()!==req.user.id) return res.status(400).json({message:"You are not authorised to view this request"})
+        
+        friendRequest.status="accepted"
+
+        await friendRequest.save()
+
+        await User.findByIdAndUpdate(friendRequest.sender,{
+            $addToSet: { friends: friendRequest.recipient }
+        })
+
+        await User.findByIdAndUpdate(friendRequest.recipient,{
+            $addToSet:{
+                friends:friendRequest.sender
+            }
+        })
+
+
+        res.status(200).json({message:"Friend Request Accepted"})
+    } catch (error) {
+
+        console.log(`Error accepting Friend Request ${error}`)
+
+        res.status(500).json({message:'Friend REquest acceptance error'})
+        
+    }
+}
