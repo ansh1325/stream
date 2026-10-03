@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser"
 import authRoutes from "./routes/auth.routes.js"
 
 import userRoutes from "./routes/user.routes.js"
+
+import chatRoutes from "./routes/chat.routes.js"
 import { connectDB } from './lib/db.js'
 dotenv.config()
 
@@ -17,17 +19,9 @@ app.use(cookieParser())
 app.use("/api/auth",authRoutes)
 app.use("/api/users",userRoutes)
 
+app.use("api/chat",chatRoutes)
 
 
-
-
-// app.get("/api/auth/login",(req,res)=>{
-//     res.send("Login Route")
-// })
-
-// app.get("/api/auth/logout",(req,res)=>{
-//     res.send("Logout Route")
-// })
 
 
 app.listen(PORT,()=>{

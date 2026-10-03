@@ -1,7 +1,7 @@
 import User from "../models/User.js"
 import FriendRequest from "../models/FriendRequest.js"
 
-export async function getMyFriends() {
+export async function getMyFriends(req,res) {
     try {
         const user=await User.findById(req.user.id)
         .select("friends")
@@ -15,7 +15,7 @@ export async function getMyFriends() {
     }
 }
 
-export async function getRecommendedUsers() {
+export async function getRecommendedUsers(req,res) {
  try {
     const currentUser=req.user
     const currentUserId=req.user.id
@@ -37,7 +37,7 @@ export async function getRecommendedUsers() {
  }   
 }
 
-export async function sendFriendRequest() {
+export async function sendFriendRequest(req,res) {
     try {
         const myId=req.user.id
         const {id:recipientId}=req.params;
@@ -73,7 +73,7 @@ export async function sendFriendRequest() {
     }
 }
 
-export async function acceptFriendRequest() {
+export async function acceptFriendRequest(req,res) {
     try {
         const {id:requestId} = req.params
 
@@ -105,5 +105,39 @@ export async function acceptFriendRequest() {
 
         res.status(500).json({message:'Friend REquest acceptance error'})
         
+    }
+}
+
+
+export async function getFriendRequests(req,res) {
+    try {
+        const incomingReqs=await FriendRequest.find({
+            recipient:req.user.id,
+            status:"pending"
+        }).populate("sender","fullName profilePic nativeLanguage learningLanguage")
+
+        const acceptedRequest=await FriendRequest.find({
+            sender:req.user.id,
+            status:"accepted"
+        }).populate("recipient","fullName profilePic")
+
+        res.status(200).json({incomingReqs,acceptedRequest})
+    } catch (error) {
+        console.log(`Error in fetching Friend Request${error}`)
+        res.status(500).json({message:"Internal Server Error"})
+    }
+}
+
+export async function getOutgoingFriendRequests(req,res) {
+    try {
+        const outgoingFriendrequests=await FriendRequest.find({
+            sender:req.user.id,
+            status:"pending"
+        }).populate("recipient","fullName profilePic nativeLanguage learningLanguage")
+
+        res.status(200).json(outgoingFriendrequests)
+    } catch (error) {
+        console.log(`Error outgoing requests ${error}`)
+        res.status(500).json({message:"Internal Server"})
     }
 }
