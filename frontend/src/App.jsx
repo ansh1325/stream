@@ -10,18 +10,18 @@ import {Toaster} from "react-hot-toast"
 import { useQuery } from '@tanstack/react-query';
 import axios from "axios"
 import { axiosInstance } from './lib/axios.js';
+import PageLoader from './components/PageLoader.jsx';
+import { getAuthUser } from './lib/api.js';
 const App = () => {
 
   const {data:authData, isLoading , error }=useQuery({
     queryKey:['authUser'],
-    queryFn: async ()=>{
-      const res=await axiosInstance.get("/auth/me")
-      return res.data
-    },
+    queryFn: getAuthUser,
     retry: false,
 
   })
   const authUser=authData?.user
+  if(isLoading) return <PageLoader/>
 
   return (
     <div className='h-screen' data-theme="night">
