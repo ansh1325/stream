@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import {useParams} from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 
 import useAuthUser from "../hooks/useAuthUser"
 import { useQuery } from '@tanstack/react-query'
@@ -16,11 +16,10 @@ import {
   StreamTheme,
   CallingState,
   useCallStateHooks,
-  name,
 } from "@stream-io/video-react-sdk";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 
-const StreamApiKey=import.meta.env.VITE_STEAM_API_KEY
+const StreamApiKey = import.meta.env.VITE_STREAM_API_KEY || import.meta.env.VITE_STEAM_API_KEY;
 
 const CallPage = () => {
 
@@ -41,7 +40,7 @@ const CallPage = () => {
 
     useEffect(()=>{
       const initCall=async()=>{
-        if(!tokenData.token||!authUser||!callId) return
+        if(!tokenData?.token||!authUser||!callId) return
 
         try {
           console.log('initializing stream cliennt')

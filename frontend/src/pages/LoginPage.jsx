@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React, { useState } from 'react'
+import { Link } from 'react-router'
 import { login } from '../lib/api'
 import { ShipWheelIcon } from "lucide-react";
 
@@ -11,7 +12,7 @@ const LoginPage = () => {
 
     const queryClient=useQueryClient()
     
-    const {mutate:loginMutation,isLoading}=useMutation({
+    const {mutate:loginMutation,isPending,error}=useMutation({
         mutationFn:login,
         onSuccess:()=>queryClient.invalidateQueries({queryKey:["authUser"]})
     })

@@ -14,14 +14,14 @@ const NotificationsPage = () => {
 
     const {mutate:acceptRequestMutation,isPending}=useMutation({
       mutationFn:acceptFriendRequest,
-      onSuccess:()=>{queryClient.invalidateQueries({queryKey:["friendRequests"]});
-      queryClient.invalidateQueries({queryKey:["friends"]})
-    }
-
+      onSuccess:()=>{
+        queryClient.invalidateQueries({queryKey:["friendRequests"]});
+        queryClient.invalidateQueries({queryKey:["friends"]});
+      }
     })
 
-    const incomingReqs=friendRequests?.incomingReqs|| []
-    const acceptedReqs=friendRequests?.acceptedReqs|| []
+    const incomingRequests = friendRequests?.incomingRequests || friendRequests?.incomingReqs || [];
+    const acceptedRequests = friendRequests?.acceptedRequests || friendRequests?.acceptedReqs || friendRequests?.acceptedRequest || [];
   return (
         <div className="p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto max-w-4xl space-y-8">

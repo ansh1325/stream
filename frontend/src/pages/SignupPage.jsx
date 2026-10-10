@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router";
 import toast from "react-hot-toast"
-// import useSignUp from "../hooks/useSignUp";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signup } from "../lib/api";
 
 const SignUpPage = () => {

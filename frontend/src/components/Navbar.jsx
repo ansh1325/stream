@@ -1,13 +1,15 @@
 import React from 'react'
 import useAuthUser from '../hooks/useAuthUser'
-import { useLocation } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { logout } from '../lib/api'
+import { ShipWheelIcon, BellIcon, LogOutIcon } from "lucide-react"
+import ThemeSelector from "./ThemeSelector"
 
 const Navbar = () => {
 
     const {authUser}=useAuthUser()
-    const {location}=useLocation()
+    const location=useLocation()
     const isChatPage=location.pathname?.startsWith("/chat")
     const queryClient=useQueryClient()
 

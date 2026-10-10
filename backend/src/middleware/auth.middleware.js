@@ -6,16 +6,17 @@ export const protectRoute=async (req,res,next)=> {
     try {
         const token=req.cookies.jwt
         if(!token){
-            return res.status(400).json({message:"unauthorised"})
+            return res.status(401).json({message:"Unauthorized: No token provided"})
         }
 
-        const decoded=jwt.verify(token,process.env.jwt_key)
+        const jwtSecret = process.env.jwt_key || process.env.JWT_SECRET
+        const decoded=jwt.verify(token,jwtSecret)
 
-        if(!decoded) return res.status(400).json({message:"Unauthorised invalid token"})
+        if(!decoded) return res.status(401).json({message:"Unauthorized: Invalid token"})
 
         const user=await User.findById(decoded.userId).select("-password")
 
-        if(!user) return res.status(400).json({message:"Unauthorised User Not Found"})
+        if(!user) return res.status(401).json({message:"Unauthorized: User not found"})
 
         req.user=user
 
@@ -23,8 +24,8 @@ export const protectRoute=async (req,res,next)=> {
         
     } catch (error) {
 
-        console.log(`Error ${error}`)
-        res.status(400).json({message:'Internal Server Error'})
+        console.log(`Error in auth middleware: ${error}`)
+        res.status(401).json({message:'Unauthorized'})
 
         
         

@@ -55,9 +55,8 @@ export async function sendFriendRequest(req,res) {
             ],
         })
 
-        if(!existingRequest){
+        if(existingRequest){
             return res.status(400).json({message:"A friend request already exists between you and this User"})
-        
         }
 
         const friendRequest=await FriendRequest.create({
@@ -121,7 +120,13 @@ export async function getFriendRequests(req,res) {
             status:"accepted"
         }).populate("recipient","fullName profilePic")
 
-        res.status(200).json({incomingReqs,acceptedRequest})
+        res.status(200).json({
+            incomingRequests: incomingReqs,
+            acceptedRequests: acceptedRequest,
+            incomingReqs,
+            acceptedReqs: acceptedRequest,
+            acceptedRequest
+        })
     } catch (error) {
         console.log(`Error in fetching Friend Request${error}`)
         res.status(500).json({message:"Internal Server Error"})

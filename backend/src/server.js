@@ -1,43 +1,46 @@
 import express from 'express'
-
 import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import authRoutes from "./routes/auth.routes.js"
-
 import userRoutes from "./routes/user.routes.js"
 import cors from "cors"
 import path from 'path'
+import { fileURLToPath } from 'url'
+import fs from 'fs'
 import chatRoutes from "./routes/chat.routes.js"
 import { connectDB } from './lib/db.js'
+
 dotenv.config()
 
-const app=express()
+const app = express()
+const PORT = process.env.PORT || 5001
 
-const PORT=process.env.PORT
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-const __dirname=path.resolve()
 app.use(express.json())
 app.use(cors({
-    origin:"http://localhost:5173",
-    credentials:true
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true
 }))
 app.use(cookieParser())
 
-app.use("/api/auth",authRoutes)
-app.use("/api/users",userRoutes)
+app.use("/api/auth", authRoutes)
+app.use("/api/users", userRoutes)
+app.use("/api/chat", chatRoutes)
 
-app.use("api/chat",chatRoutes)
+if (process.env.NODE_ENV === 'production') {
+    const frontendDist = fs.existsSync(path.join(__dirname, "../../frontend/dist"))
+        ? path.join(__dirname, "../../frontend/dist")
+        : path.join(process.cwd(), "frontend/dist");
 
-
-if(process.env.NODE_ENV==='production'){
-    app.use(express.static(path.join(__dirname,"../frontend/dist")))
-    app.get("*",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))
+    app.use(express.static(frontendDist))
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(frontendDist, "index.html"))
     })
 }
 
-
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
     console.log(`Server is listening on ${PORT}`)
     connectDB()
 })

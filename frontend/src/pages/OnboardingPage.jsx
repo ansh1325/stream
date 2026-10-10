@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useAuthUser from '../hooks/useAuthUser'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { completeOnboarding } from '../lib/api';
 import toast from "react-hot-toast"
-import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
+import { CameraIcon, LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
+import { LANGUAGES } from '../constants';
 
 const OnboardingPage = () => {
 
@@ -24,7 +25,7 @@ const {mutate:onboardingMutation,isPending}=useMutation({
         toast.success("Profile Onboarded Successfully")
         queryClient.invalidateQueries({queryKey:["authUser"]})
      },
-     onError:(e)=>toast.error(e.response.data.message)
+     onError:(e)=>toast.error(e.response?.data?.message || "Onboarding failed")
 })
 
 const handleSubmit=(e)=>{
@@ -32,7 +33,12 @@ const handleSubmit=(e)=>{
     onboardingMutation(formState)
 }
 
-const handleRandomAvatar=()=>{}
+const handleRandomAvatar=()=>{
+    const randomSeed = Math.random().toString(36).substring(7);
+    const randomAvatar = `https://api.dicebear.com/10.x/lorelei/svg?seed=${randomSeed}`;
+    setFormState((prev) => ({ ...prev, profilePic: randomAvatar }));
+    toast.success("New avatar generated!");
+}
 
   return (
 

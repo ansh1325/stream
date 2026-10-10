@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router'
+import toast from 'react-hot-toast'
 import { getOutgoingFriendReqs, getRecommendedUsers, getUserFriends, sendFriendRequest } from '../lib/api'
 import FriendCard, { getLanguageFlag } from '../components/FriendCard'
 import NoFriendsFound from '../components/NoFriendsFound'
@@ -10,7 +12,7 @@ import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-rea
 const HomePage = () => {
     const queryClient=useQueryClient()
 
-    const [outgoingRequestsId, setOutgoingRequestsId] = useState(new Set())
+    const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set())
 
     const {data:friends=[],isLoading:loadingFriends}=useQuery({
         queryKey:['friends'],
@@ -28,18 +30,24 @@ const HomePage = () => {
 
     const {mutate:sendRequestMutation,isPending}=useMutation({
         mutationFn:sendFriendRequest,
-        onSuccess:()=>{queryClient.invalidateQueries({queryKey:['outgoingFriendReqs']})}
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:['outgoingFriendReqs']});
+            toast.success("Friend request sent!");
+        },
+        onError:(err)=>{
+            toast.error(err.response?.data?.message || "Failed to send request");
+        }
     })
 
     useEffect(() => {
   const outgoingIds = new Set();
-  if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
-    outgoingFriendReqs.forEach((req) => {
+  if (outgoingFriendsReqs && outgoingFriendsReqs.length > 0) {
+    outgoingFriendsReqs.forEach((req) => {
       outgoingIds.add(req.recipient._id);
     });
     setOutgoingRequestsIds(outgoingIds);
   }
-}, [outgoingFriendReqs]);
+}, [outgoingFriendsReqs]);
 
 
   return (
