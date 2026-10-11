@@ -65,16 +65,16 @@ const ChatPage = () => {
     },[tokenData,authUser,targetUserId])
 
     const handleVideoCall=async ()=>{
-
       if (channel) {
-  const callUrl = `${window.location.origin}/call/${channel.id}`;
+        const callUrl = `${window.location.origin}/call/${channel.id}`;
 
-  channel.sendMessage({
-    text: `I've started a video call. Join me here: ${callUrl}`,
-  });
+        await channel.sendMessage({
+          text: `I've started a video call. Join me here: ${callUrl}`,
+        });
 
-  toast.success("Video call link sent successfully!");
-}
+        toast.success("Video call link sent! Opening call room...");
+        window.open(callUrl, "_blank");
+      }
     }
 
 
@@ -85,11 +85,13 @@ const ChatPage = () => {
       <Chat client={chatClient}>
         <Channel channel={channel}>
 
-          <div className='w-full relative'>
-            <CallButton handleVideoCall={handleVideoCall}/>
+          <div className='w-full h-full relative'>
             <Window>
-              <ChannelHeader/>
-              <MessageList/>
+              <div className='relative w-full'>
+                <ChannelHeader />
+                <CallButton handleVideoCall={handleVideoCall} />
+              </div>
+              <MessageList />
               <MessageComposer />
             </Window>
           </div>
