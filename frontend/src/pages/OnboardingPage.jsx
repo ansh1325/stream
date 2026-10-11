@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router'
 import useAuthUser from '../hooks/useAuthUser'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { completeOnboarding } from '../lib/api';
@@ -8,6 +9,7 @@ import { LANGUAGES } from '../constants';
 
 const OnboardingPage = () => {
 
+const navigate = useNavigate()
 const {authUser}=useAuthUser()
 const queryClient=useQueryClient()
 const [formState, setFormState] = useState({
@@ -21,9 +23,10 @@ const [formState, setFormState] = useState({
 
 const {mutate:onboardingMutation,isPending}=useMutation({
      mutationFn:completeOnboarding,
-     onSuccess:()=>{ 
+     onSuccess:async ()=>{ 
         toast.success("Profile Onboarded Successfully")
-        queryClient.invalidateQueries({queryKey:["authUser"]})
+        await queryClient.invalidateQueries({queryKey:["authUser"]})
+        navigate("/")
      },
      onError:(e)=>toast.error(e.response?.data?.message || "Onboarding failed")
 })
@@ -86,6 +89,7 @@ const handleRandomAvatar=()=>{
                 onChange={(e) => setFormState({ ...formState, fullName: e.target.value })}
                 className="input input-bordered w-full"
                 placeholder="Your full name"
+                required
               />
             </div>
 
@@ -100,6 +104,7 @@ const handleRandomAvatar=()=>{
                 onChange={(e) => setFormState({ ...formState, bio: e.target.value })}
                 className="textarea textarea-bordered h-24"
                 placeholder="Tell others about yourself and your language learning goals"
+                required
               />
             </div>
 
@@ -115,6 +120,7 @@ const handleRandomAvatar=()=>{
                   value={formState.nativeLanguage}
                   onChange={(e) => setFormState({ ...formState, nativeLanguage: e.target.value })}
                   className="select select-bordered w-full"
+                  required
                 >
                   <option value="">Select your native language</option>
                   {LANGUAGES.map((lang) => (
@@ -135,6 +141,7 @@ const handleRandomAvatar=()=>{
                   value={formState.learningLanguage}
                   onChange={(e) => setFormState({ ...formState, learningLanguage: e.target.value })}
                   className="select select-bordered w-full"
+                  required
                 >
                   <option value="">Select language you're learning</option>
                   {LANGUAGES.map((lang) => (
@@ -160,6 +167,7 @@ const handleRandomAvatar=()=>{
                   onChange={(e) => setFormState({ ...formState, location: e.target.value })}
                   className="input input-bordered w-full pl-10"
                   placeholder="City, Country"
+                  required
                 />
               </div>
             </div>
