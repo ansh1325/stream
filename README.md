@@ -2,7 +2,7 @@
 
 > **Live Deployment:** [https://stream-z290.onrender.com](https://stream-z290.onrender.com)  
 > **Repository:** [https://github.com/ansh1325/stream](https://github.com/ansh1325/stream)  
-> **Video Walkthrough Demo:** [![Watch the Demo](https://lnkd.in/p/gpASuBD8) 
+> **Video Walkthrough Demo:** [Video](https://lnkd.in/p/gpASuBD8) 
 
 ## 🌟 Overview
 
