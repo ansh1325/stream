@@ -2,9 +2,7 @@
 
 > **Live Deployment:** [https://stream-z290.onrender.com](https://stream-z290.onrender.com)  
 > **Repository:** [https://github.com/ansh1325/stream](https://github.com/ansh1325/stream)  
-> **Video Walkthrough Demo:** [![Watch the Demo](https://img.shields.io/badge/YouTube-Video%20Demo-red?style=for-the-badge&logo=youtube)](https://lnkd.in/p/gpASuBD8) *(Replace `YOUR_YOUTUBE_VIDEO_LINK_HERE` with your video URL)*
-
----
+> **Video Walkthrough Demo:** [![Watch the Demo](https://lnkd.in/p/gpASuBD8) 
 
 ## 🌟 Overview
 
